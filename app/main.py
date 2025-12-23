@@ -1,3 +1,5 @@
+import pydantic
+
 from fastapi import FastAPI
 from data_interactor import Contact
 
@@ -8,7 +10,7 @@ app = FastAPI()
 
 
 @app.get('/contacts')
-def get_contacts_list():
+def get_all_contacts():
     pass
 
 

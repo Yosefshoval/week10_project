@@ -1,3 +1,9 @@
+
+
+# Here will be code to crate database connection
+
+
+
 class Contact:
 
     def __init__(self, con_id, first_name, last_name, phone_number):
@@ -12,3 +18,28 @@ class Contact:
                 'last_name' : self.last_name,
                 'phone_number' : self.phone_number
                 }
+
+
+
+
+# Here will be code to crate new contact, and insert it into db.
+# Request: {
+# "first_name": "John",
+# "last_name": "Doe",
+# "phone_number": "050-1234567"
+# }
+# Response: {
+# "message": "Contact created successfully",
+# "id": 4
+# }
+
+
+
+# Here will be code to search contact in the db by id.
+
+
+# Here will be code to update an existing contact in the db (by id).
+
+
+# Here will be code to delete  an existing contact in the db (by id).
+
