@@ -1,8 +1,7 @@
 
 
+
 # Here will be code to crate database connection
-
-
 
 class Contact:
 

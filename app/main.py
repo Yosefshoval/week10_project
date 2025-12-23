@@ -1,12 +1,13 @@
 import pydantic
-
 from fastapi import FastAPI
 from data_interactor import Contact
-
+from database import connect_to_db
 
 
 
 app = FastAPI()
+db_connector = connect_to_db()
+
 
 
 @app.get('/contacts')
