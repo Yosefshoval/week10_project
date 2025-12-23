@@ -1,7 +1,8 @@
 import pydantic
+import data_interactor as data_i
 from fastapi import FastAPI
-from data_interactor import Contact
 from database import connect_to_db
+
 
 
 
@@ -12,12 +13,17 @@ db_connector = connect_to_db()
 
 @app.get('/contacts')
 def get_all_contacts():
-    pass
+    contacts = data_i.get_all_contacts(db_connector, )
+    return contacts
 
 
 @app.post('/contacts')
-def create_contact(contact : Contact):
-    pass
+def create_contact(contact : data_i.Contact):
+    contact = contact
+
+    result = data_i.create_new_contact(contact, db_connector)
+
+    return result
 
 
 @app.put('/contacts/{id}')
