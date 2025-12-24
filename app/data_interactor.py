@@ -1,7 +1,6 @@
 import database as db
+# from database import SqlService
 
-
-# Here will be code to crate database connection
 
 class Contact:
 
@@ -15,6 +14,8 @@ class Contact:
                 'last_name' : self.last_name,
                 'phone_number' : self.phone_number
                 }
+
+
 
 
 def get_all_contacts(cursor):

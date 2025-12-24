@@ -1,26 +1,36 @@
 import os
 from dotenv import load_dotenv
 import mysql.connector
+from pathlib import Path
+
+
 
 load_dotenv()
 
-def connect_to_db():
+TABLE = 'contact'
 
-    conn = mysql.connector.connect(
-        host=f'{os.getenv('DB_HOST')}',
-        user=F'{os.getenv('DB_USER')}',
-        password=f'{os.getenv('DB_PASSWORD')}',
-        database=f'{os.getenv('DB_NAME')}'
-    )
-    cursor = conn.cursor()
-    create_statement = """CREATE TABLE IF NOT EXISTS contact 
-                   (id INT AUTO_INCREMENT PRIMARY KEY,
-                   first_name VARCHAR(50) NOT NULL,
-                   last_name VARCHAR(50) NOT NULL,
-                   phone_number VARCHAR(20) NOT NULL UNIQUE
-                   );"""
+DB_HOST = os.getenv('DB_HOST')
+DB_PASSWORD = os.getenv('MYSQL_ROOT_PASSWORD')
+DB_NAME = os.getenv('MYSQL_DATABASE')
 
-    cursor.execute(create_statement)
 
-    cursor.execute("SHOW TABLES")
-    return cursor
+class SqlService:
+    def __init__(self):
+        self.name = DB_NAME
+        self.user = DB_PASSWORD
+        self.password = DB_PASSWORD
+        self.host = DB_HOST
+
+    def connect_db(self):
+        try:
+            conn = mysql.connector.connect(
+                host=self.host,
+                user=self.user,
+                password=self.password,
+                database=self.name,
+            )
+            cursor = conn.cursor()
+            return cursor
+        except mysql.connector.Error as err:
+            print(f"Error connecting to MySQL: {err}")
+            return err

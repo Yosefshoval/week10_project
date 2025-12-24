@@ -1,4 +1,5 @@
 import pydantic
+import uvicorn
 import data_interactor as data_i
 from fastapi import FastAPI
 from database import connect_to_db
@@ -34,3 +35,7 @@ def update_contact():
 @app.delete('/contacts/{id}')
 def delete_contact():
     pass
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, port=8000)
