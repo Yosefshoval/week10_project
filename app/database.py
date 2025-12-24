@@ -4,20 +4,20 @@ import mysql.connector
 from pathlib import Path
 
 
-
 load_dotenv()
 
 TABLE = 'contact'
 
-DB_HOST = os.getenv('DB_HOST')
-DB_PASSWORD = os.getenv('MYSQL_ROOT_PASSWORD')
-DB_NAME = os.getenv('MYSQL_DATABASE')
+DB_HOST = os.getenv('DB_HOST', 'db')
+DB_PASSWORD = os.getenv('MYSQL_ROOT_PASSWORD', 'root')
+DB_USER = os.getenv('MYSQL_USER', 'root')
+DB_NAME = os.getenv('MYSQL_DATABASE', 'contacts_db')
 
 
 class SqlService:
     def __init__(self):
         self.name = DB_NAME
-        self.user = DB_PASSWORD
+        self.user = DB_USER
         self.password = DB_PASSWORD
         self.host = DB_HOST
 
@@ -31,6 +31,6 @@ class SqlService:
             )
             cursor = conn.cursor()
             return cursor
-        except mysql.connector.Error as err:
+        except Exception as err:
             print(f"Error connecting to MySQL: {err}")
             return err

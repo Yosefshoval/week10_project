@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import Annotated
 import database as db
 
 
@@ -13,8 +14,6 @@ class Contact(BaseModel):
                 'last_name' : self.last_name,
                 'phone_number' : self.phone_number
                 }
-
-
 
 
 def get_all_contacts(cursor):

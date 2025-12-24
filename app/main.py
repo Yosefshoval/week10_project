@@ -1,14 +1,22 @@
 import json
-import pydantic
 import uvicorn
 import data_interactor as data_i
 from fastapi import FastAPI
 from database import SqlService
+import mysql
 
 
 
 app = FastAPI()
 db_connector = SqlService().connect_db()
+
+
+@app.get('/')
+def home():
+    if isinstance(db_connector, mysql.connector.errors.DatabaseError):
+        return {'message' : 'failed to connect to database.'}
+    return {'message' : 'Hello From inside the container!!'}
+
 
 
 @app.get('/contacts')
@@ -37,4 +45,4 @@ def delete_contact(c_id):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, port=8000)
+    uvicorn.run(app, port=8000, host='0.0.0.0')
