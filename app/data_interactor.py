@@ -1,13 +1,12 @@
+from pydantic import BaseModel
 import database as db
-# from database import SqlService
 
 
-class Contact:
+class Contact(BaseModel):
 
-    def __init__(self, first_name, last_name, phone_number):
-        self.first_name = first_name
-        self.last_name = last_name
-        self.phone_number = phone_number
+    first_name : str
+    last_name : str
+    phone_number : str
 
     def __dict__(self):
         return {'first_name' : self.first_name,
@@ -26,6 +25,11 @@ def get_all_contacts(cursor):
     return cursor.fetchall()
 
 
+def search_contact_by_id(c_id, cursor):
+    cursor.execute(f'SELECT * FROM {db.TABLE} WHERE id = {c_id}')
+    is_there_id = cursor.fetchone()
+    return is_there_id is not None
+
 
 
 def create_new_contact(contact : Contact, cursor):
@@ -38,24 +42,30 @@ def create_new_contact(contact : Contact, cursor):
             "id": con_id }
 
 
-# Here will be code to crate new contact, and insert it into db.
-# Request: {
-# "first_name": "John",
-# "last_name": "Doe",
-# "phone_number": "050-1234567"
-# }
-# Response: {
-# "message": "Contact created successfully",
-# "id": 4
-# }
+
+def update_contact(contact_id, new_contact : Contact, cursor):
+    try:
+        if not search_contact_by_id(contact_id, cursor):
+            return f'There is no contact with id {contact_id} in the database.'
+        statement = (f"UPDATE {db.TABLE} "
+               f"SET first_name = {new_contact.first_name}, "
+               f"last_name = {new_contact.last_name}, "
+               f"phone_number = {new_contact.phone_number} "
+               f"WHERE id = {contact_id};")
+        cursor.execute(statement)
+        return 'contact updated successfully'
+    except Exception as err:
+        return err
 
 
 
-# Here will be code to search contact in the db by id.
 
-
-# Here will be code to update an existing contact in the db (by id).
-
-
-# Here will be code to delete  an existing contact in the db (by id).
-
+def delete_contact(contact_id, cursor):
+    try:
+        if not search_contact_by_id(contact_id, cursor):
+            return f'There is no contact with id {contact_id} in the database.'
+        statement = f''
+        cursor.execute(statement)
+        return 'contact deleted successfully'
+    except Exception as err:
+        return err
