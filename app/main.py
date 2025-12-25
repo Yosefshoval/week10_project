@@ -8,39 +8,58 @@ import mysql
 
 
 app = FastAPI()
-db_connector = SqlService().connect_db()
+
+
+def get_cursor():
+    db_connector = SqlService().connect_db()
+    cursor = db_connector.cursor()
+    return cursor, db_connector
 
 
 @app.get('/')
 def home():
-    if isinstance(db_connector, mysql.connector.errors.DatabaseError):
+    cursor, connector = get_cursor()
+    if isinstance(cursor, mysql.connector.errors.DatabaseError):
         return {'message' : 'failed to connect to database.'}
+    cursor.close()
+    connector.close()
     return {'message' : 'Hello From inside the container!!'}
 
 
 
 @app.get('/contacts')
 def get_all_contacts():
-    contacts = data_i.get_all_contacts(db_connector)
+    cursor, connector = get_cursor()
+    contacts = data_i.get_all_contacts(cursor)
+    cursor.close()
+    connector.close()
     return {'All contacts' : contacts}
 
 
 @app.post('/contacts')
 def create_contact(contact : data_i.Contact):
-    contact = contact
-    new_id = data_i.create_new_contact(contact, db_connector)
+    cursor, connector = get_cursor()
+    new_id = data_i.create_new_contact(contact, cursor)
+    cursor.close()
+    connector.close()
     return {'message' : 'contact created successfully', 'new_id' : new_id}
 
 
 @app.put('/contacts/{c_id}')
 def update_contact(c_id, contact : data_i.Contact):
-    is_updated = data_i.update_contact(c_id, contact, db_connector)
+    cursor, connector = get_cursor()
+    is_updated = data_i.update_contact(c_id, contact, cursor)
+    cursor.close()
+    connector.close()
     return {'message' : is_updated}
 
 
 @app.delete('/contacts/{id}')
 def delete_contact(c_id):
-    is_deleted = data_i.delete_contact(c_id, db_connector)
+    cursor, connector = get_cursor()
+    is_deleted = data_i.delete_contact(c_id, cursor)
+    cursor.close()
+    connector.close()
     return {'message' : is_deleted}
 
 

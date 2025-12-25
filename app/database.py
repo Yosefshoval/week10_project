@@ -6,7 +6,7 @@ from pathlib import Path
 
 load_dotenv()
 
-TABLE = 'contact'
+TABLE = 'contacts'
 
 DB_HOST = os.getenv('DB_HOST', 'db')
 DB_PASSWORD = os.getenv('MYSQL_ROOT_PASSWORD', 'root')
@@ -29,8 +29,8 @@ class SqlService:
                 password=self.password,
                 database=self.name,
             )
-            cursor = conn.cursor()
-            return cursor
+            
+            return conn
         except Exception as err:
             print(f"Error connecting to MySQL: {err}")
             return err

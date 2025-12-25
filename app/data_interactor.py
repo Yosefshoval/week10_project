@@ -1,9 +1,12 @@
-from pydantic import BaseModel, Field
-from typing import Annotated
+# from pydantic import BaseModel, Field
+from dataclasses import dataclass
+
 import database as db
 
 
-class Contact(BaseModel):
+
+@dataclass
+class Contact():
 
     first_name : str
     last_name : str
@@ -32,13 +35,16 @@ def search_contact_by_id(c_id, cursor):
 
 
 def create_new_contact(contact : Contact, cursor):
+    # if not isinstance(contact, Contact):
+    #     contact = Contact(**contact)
+    contact = contact.__dict__
     sql = f"INSERT INTO {db.TABLE} (first_name, last_name, phone_number) VALUES (%s, %s, %s)"
-    val = (contact.first_name, contact.last_name, contact.phone_number)
+    val = (contact['first_name'], contact['last_name'], contact['phone_number'])
     cursor.execute(sql, val)
 
-    con_id = cursor.execute('SELECT LAST_INSERT_ID();')
-    return {"message": "Contact created successfully",
-            "id": con_id }
+    cursor.execute('SELECT LAST_INSERT_ID();')
+    con_id = cursor.fetchone()
+    return con_id
 
 
 
