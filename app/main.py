@@ -1,10 +1,8 @@
-import json
 import uvicorn
 import data_interactor as data_i
 from fastapi import FastAPI
 from database import SqlService
 import mysql
-
 
 
 app = FastAPI()
@@ -19,8 +17,9 @@ def get_cursor():
 @app.get('/')
 def home():
     cursor, connector = get_cursor()
-    if isinstance(cursor, mysql.connector.errors.DatabaseError):
-        return {'message' : 'failed to connect to database.'}
+    if isinstance(cursor, Exception):
+        return {'message' : f'failed to connect to database., {cursor}'}
+    
     cursor.close()
     connector.close()
     return {'message' : 'Hello From inside the container!!'}
@@ -40,6 +39,7 @@ def get_all_contacts():
 def create_contact(contact : data_i.Contact):
     cursor, connector = get_cursor()
     new_id = data_i.create_new_contact(contact, cursor)
+    connector.commit()
     cursor.close()
     connector.close()
     return {'message' : 'contact created successfully', 'new_id' : new_id}
@@ -49,6 +49,7 @@ def create_contact(contact : data_i.Contact):
 def update_contact(c_id, contact : data_i.Contact):
     cursor, connector = get_cursor()
     is_updated = data_i.update_contact(c_id, contact, cursor)
+    connector.commit()
     cursor.close()
     connector.close()
     return {'message' : is_updated}
@@ -58,6 +59,7 @@ def update_contact(c_id, contact : data_i.Contact):
 def delete_contact(c_id):
     cursor, connector = get_cursor()
     is_deleted = data_i.delete_contact(c_id, cursor)
+    connector.commit()
     cursor.close()
     connector.close()
     return {'message' : is_deleted}
